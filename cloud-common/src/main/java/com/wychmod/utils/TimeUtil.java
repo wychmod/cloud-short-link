@@ -33,8 +33,7 @@ public class TimeUtil {
      */
     public static String format(LocalDateTime localDateTime, String pattern){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-        String timeStr = formatter.format(localDateTime.atZone(DEFAULT_ZONE_ID));
-        return timeStr;
+        return formatter.format(localDateTime.atZone(DEFAULT_ZONE_ID));
     }
 
     /**
@@ -45,8 +44,7 @@ public class TimeUtil {
      */
     public static String format(Date time, String pattern){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-        String timeStr = formatter.format(time.toInstant().atZone(DEFAULT_ZONE_ID));
-        return timeStr;
+        return formatter.format(time.toInstant().atZone(DEFAULT_ZONE_ID));
     }
 
     /**
@@ -55,8 +53,7 @@ public class TimeUtil {
      * @return 格式化后的日期字符串
      */
     public static String format(Date time){
-        String timeStr = DEFAULT_DATE_TIME_FORMATTER.format(time.toInstant().atZone(DEFAULT_ZONE_ID));
-        return timeStr;
+        return DEFAULT_DATE_TIME_FORMATTER.format(time.toInstant().atZone(DEFAULT_ZONE_ID));
     }
 
     /**
@@ -65,8 +62,7 @@ public class TimeUtil {
      * @return 格式化后的日期字符串
      */
     public static String format(long timestamp) {
-        String timeStr = DEFAULT_DATE_TIME_FORMATTER.format(new Date(timestamp).toInstant().atZone(DEFAULT_ZONE_ID));
-        return timeStr;
+        return DEFAULT_DATE_TIME_FORMATTER.format(new Date(timestamp).toInstant().atZone(DEFAULT_ZONE_ID));
     }
 
     /**

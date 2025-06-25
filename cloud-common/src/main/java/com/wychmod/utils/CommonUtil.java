@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.*;
 
@@ -29,13 +30,13 @@ public class CommonUtil {
         try {
             // 尝试从请求头中获取客户端IP地址
             ipAddress = request.getHeader("x-forwarded-for");
-            if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+            if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
                 ipAddress = request.getHeader("Proxy-Client-IP");
             }
-            if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+            if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
                 ipAddress = request.getHeader("WL-Proxy-Client-IP");
             }
-            if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+            if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
                 ipAddress = request.getRemoteAddr();
                 if (ipAddress.equals("127.0.0.1")) {
                     // 根据网卡取本机配置的IP
@@ -43,9 +44,9 @@ public class CommonUtil {
                     try {
                         inet = InetAddress.getLocalHost();
                     } catch (UnknownHostException e) {
-                        e.printStackTrace();
+                        log.error("获取客户端IP地址异常:{}", e);
                     }
-                    ipAddress = inet.getHostAddress();
+                    ipAddress = Objects.requireNonNull(inet).getHostAddress();
                 }
             }
             // 对于通过多个代理的情况，第一个IP为客户端真实IP,多个IP按照','分割
@@ -88,7 +89,7 @@ public class CommonUtil {
     public static String MD5(String data) {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] array = md.digest(data.getBytes("UTF-8"));
+            byte[] array = md.digest(data.getBytes(StandardCharsets.UTF_8));
             StringBuilder sb = new StringBuilder();
             for (byte item : array) {
                 sb.append(Integer.toHexString((item & 0xFF) | 0x100).substring(1, 3));
@@ -136,14 +137,14 @@ public class CommonUtil {
         return UUID.randomUUID().toString().replaceAll("-", "").substring(0, 32);
     }
 
+    private static final String ALL_CHAR_NUM = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+
     /**
      * 获取随机长度的串
      *
      * @param length 生成字符串的长度
      * @return 随机生成的字符串
      */
-    private static final String ALL_CHAR_NUM = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-
     public static String getStringNumRandom(int length) {
         //生成随机数字和字母,
         Random random = new Random();
